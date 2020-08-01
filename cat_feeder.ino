@@ -1,34 +1,57 @@
-#define REV_TIME 2000
+#define REV_TIME 7000       // Average time to rotate the valve
+#define NUM_OF_CATS 1       // Number of cats that you want to feed
 
-const int pos_sensor = 18;
+const int stop_sensor_pin = 18;  // Indicates when valve is closed
 const int motor_relay = 4;
 
-bool init_flag;
+bool startup_flag;
 
 void setup() {
-  pinMode(pos_sensor, INPUT);
+  pinMode(stop_sensor_pin, INPUT);
   pinMode(motor_relay, OUTPUT);
+
   Serial.begin(9600);
+
   digitalWrite(motor_relay, LOW);
-  init_flag = true;
+
+  startup_flag = true;
 }
 
+/**
+ * @brief Main loop
+ * 
+ */
 void loop() {
-  if(init_flag){
-    feed();
-    feed();
-    feed();
-    feed();
-    feed();
+  if(startup_flag){
+    feed(NUM_OF_CATS);
   }
-  init_flag = false;
+  startup_flag = false;
 }
 
-void feed(){
+/**
+ * @brief Turns on the valve and feed the cats with almost 100gr 
+ * 
+ * @param cat_number 
+ * @return true fro
+ */
+bool feed(int cat_number){
+  int stop_sensor_val = 0;
+
   digitalWrite(motor_relay, HIGH);
-  delay(REV_TIME);
-  while(!digitalRead(pos_sensor)){}
+  Serial.println("Open valve");
+
+  delay(REV_TIME*cat_number);
+  Serial.println("End of delay");
+
+  stop_sensor_val = digitalRead(stop_sensor_pin);
+
+  while(!stop_sensor_val){
+    stop_sensor_val = digitalRead(stop_sensor_pin);
+  }
+  Serial.println("Sensor triggered");
+  
   digitalWrite(motor_relay, LOW);
+  return true;
 }
 
 
