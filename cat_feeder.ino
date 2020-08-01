@@ -1,7 +1,8 @@
-#define REV_TIME 7000       // Average time to rotate the valve
-#define NUM_OF_CATS 1       // Number of cats that you want to feed
+#define MAX_REVOLUTIONS 2         // Max rotations for feeding one cat
+#define NUM_OF_CATS 1             // Number of cats that you want to feed
+#define FEED_CYCLE_TIME 1         // Reading of stop sensor   
 
-const int stop_sensor_pin = 18;  // Indicates when valve is closed
+const int stop_sensor_pin = 18;   // Indicates when valve is closed
 const int motor_relay = 4;
 
 bool startup_flag;
@@ -23,7 +24,7 @@ void setup() {
  */
 void loop() {
   if(startup_flag){
-    feed(NUM_OF_CATS);
+    feed();
   }
   startup_flag = false;
 }
@@ -34,21 +35,34 @@ void loop() {
  * @param cat_number 
  * @return true fro
  */
-bool feed(int cat_number){
+bool feed(){
   int stop_sensor_val = 0;
+  int prev_val = 0;
 
   digitalWrite(motor_relay, HIGH);
   Serial.println("Open valve");
 
-  delay(REV_TIME*cat_number);
-  Serial.println("End of delay");
-
   stop_sensor_val = digitalRead(stop_sensor_pin);
+  prev_val = stop_sensor_val;
+  int revs_counter = 0;
 
-  while(!stop_sensor_val){
+  while(revs_counter < NUM_OF_CATS * MAX_REVOLUTIONS){
     stop_sensor_val = digitalRead(stop_sensor_pin);
+    if((stop_sensor_val == 1) && (prev_val == 0)){
+      revs_counter++;
+    }
+    prev_val = stop_sensor_val;
+    
+    Serial.println(revs_counter);
+    delay(FEED_CYCLE_TIME);
   }
-  Serial.println("Sensor triggered");
+  Serial.println("End of feed loop");
+  
+  while (!stop_sensor_val){
+      stop_sensor_val = digitalRead(stop_sensor_pin);
+  }
+
+  Serial.println("Fully close valve");
   
   digitalWrite(motor_relay, LOW);
   return true;
