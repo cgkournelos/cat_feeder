@@ -26,7 +26,7 @@ void setup() {
 
   if (!rtc.begin()) {
     // Serial.println("Error on RTC begin. Could not find RTC module");
-    // // Serial.flush();
+    // Serial.flush();
     // abort();
     digitalWrite(LED_BUILTIN, HIGH);
   }
@@ -114,8 +114,7 @@ bool timeToFeed() {
 
   printTime(now, "timeToFeed");
 
-  // if (((now.hour() == 9) || (now.hour() == 21)) && (now.minute() == 38)) {
-  if(now.minute() % 5 == 0 ){
+  if (((now.hour() == 10) || (now.hour() == 21)) && (now.minute() == 38)) {
     return true;
   } else {
     return false;
