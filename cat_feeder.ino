@@ -38,15 +38,14 @@ void setup() {
     // rtc.adjust(DateTime(2020, 08, 01, 3, 0, 0));
   }
 
-  feed_on_startup = false;
+  feed_on_startup = true;
 
   // Serial.println("[setup] Complete");
-  delay(1000); // Startup delay
+  delay(5000); // Startup delay
 }
 
 /**
  * @brief Main loop
- *
  */
 void loop() {
 
@@ -61,10 +60,8 @@ void loop() {
 /**
  * @brief Turns on the valve and feed the cats with almost 40gr
  *
- * @param cat_number
- * @return true
  */
-bool feed() {
+void feed() {
   int stop_sensor_val = 0;
   int prev_val = 0;
 
@@ -84,8 +81,8 @@ bool feed() {
     }
     prev_val = stop_sensor_val;
     delay(FEED_CYCLE_TIME);
-    // // Serial.print("[feed] Revolutions : ");
-    // // Serial.println(revs_counter);
+    // Serial.print("[feed] Revolutions : ");
+    // Serial.println(revs_counter);
   }
   // Serial.println("[feed] End of feed loop");
 
@@ -98,7 +95,7 @@ bool feed() {
   // Stop motor
   digitalWrite(motor_relay, LOW);
   delay(60000); // delay 1 minute before it can run again
-  // // Serial.println("[feed] End of feed function");
+  // Serial.println("[feed] End of feed function");
   digitalWrite(LED_BUILTIN, LOW);
   return true;
 }
@@ -112,9 +109,9 @@ bool feed() {
 bool timeToFeed() {
   DateTime now = rtc.now();
 
-  printTime(now, "timeToFeed");
+  // printTime(now, "timeToFeed");
 
-  if (((now.hour() == 10) || (now.hour() == 21)) && (now.minute() == 38)) {
+  if (((now.hour() == 9) || (now.hour() == 21)) && (now.minute() == 5)) {
     return true;
   } else {
     return false;
@@ -122,26 +119,27 @@ bool timeToFeed() {
 }
 
 /**
- * @brief
+ * @brief Print a DateTime from RTC in Serial
  *
  * @param time
+ * @param print_tag
  */
 void printTime(DateTime time, String print_tag) {
-  // Serial.print("[");
-  // Serial.print(print_tag);
-  // Serial.print("] ");
-  // Serial.print(time.year(), DEC);
-  // Serial.print('/');
-  // Serial.print(time.month(), DEC);
-  // Serial.print('/');
-  // Serial.print(time.day(), DEC);
-  // Serial.print(" (");
-  // Serial.print(days_of_week[time.dayOfTheWeek()]);
-  // Serial.print(") ");
-  // Serial.print(time.hour(), DEC);
-  // Serial.print(':');
-  // Serial.print(time.minute(), DEC);
-  // Serial.print(':');
-  // Serial.print(time.second(), DEC);
-  // Serial.println();
+  Serial.print("[");
+  Serial.print(print_tag);
+  Serial.print("] ");
+  Serial.print(time.year(), DEC);
+  Serial.print('/');
+  Serial.print(time.month(), DEC);
+  Serial.print('/');
+  Serial.print(time.day(), DEC);
+  Serial.print(" (");
+  Serial.print(days_of_week[time.dayOfTheWeek()]);
+  Serial.print(") ");
+  Serial.print(time.hour(), DEC);
+  Serial.print(':');
+  Serial.print(time.minute(), DEC);
+  Serial.print(':');
+  Serial.print(time.second(), DEC);
+  Serial.println();
 }
