@@ -1,5 +1,5 @@
 
-#define MAX_REVOLUTIONS 2   // Max rotations for feeding one cat
+#define MAX_REVOLUTIONS 4   // Max rotations for feeding one cat
 #define NUM_OF_CATS 1       // Number of cats that you want to feed
 #define FEED_CYCLE_TIME 100 // Reading of stop sensor
 
